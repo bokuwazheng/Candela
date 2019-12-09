@@ -1,0 +1,252 @@
+﻿<UserControl x:Class="Candela.Views.BatchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Candela.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="333">
+    
+    <UserControl.Resources>
+        <!--Render queue item template-->
+        <DataTemplate x:Key="ListItem">
+            <Grid Height="30" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="232" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding FileName}" Foreground="{StaticResource Dark}" Grid.Column="0"
+                           VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" 
+                           ToolTipService.ShowDuration="30000">
+                    <TextBlock.ToolTip>
+                        <TextBlock Text="{Binding Origin}" Margin="3,0,3,0" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,0,5">
+                    <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding ColorCorrection}" Margin="5,5,5,0" 
+                                  FontSize="14" >
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="Cyan"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding PremultiplyAlpha}" Margin="5,5,5,0" 
+                                  FontSize="14" >
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="Magenta"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding LuminanceToAlpha}" Margin="5,5,5,0" 
+                                  FontSize="14" >
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="Yellow"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <!--Render queue item template ENDS HERE-->
+    </UserControl.Resources>
+
+    <!--MAIN GRID-->
+    <Grid Margin="0,0,0,5" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition MinHeight="30"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <!--Header-->
+            <TextBlock Text="Batch render" FontWeight="Medium" FontSize="14" Margin="0,10,0,5" HorizontalAlignment="Center"/>
+            <!--Progress Bar-->
+            <ProgressBar Height="2" Value="{Binding RenderProgress}" Margin="5,0,10,0" Foreground="{StaticResource SkyBlue}"
+                         Maximum="100" Minimum="0" BorderThickness="0">
+                <ProgressBar.Style>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Text, ElementName=RenderButtonText}" Value="Cancel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+            <!--Buttons-->
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <!--Upload button-->
+                <Button Height="38" Width="105" FontSize="16" Command="{Binding LoadFilesCommand}" Grid.Column="0" >
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" Padding="4" RenderTransformOrigin="0.5,0.5"/>
+                        <TextBlock Text="Pick folder" Margin="0,0,4,0" FontSize="14" Padding="6,2,0,0"/>
+                    </StackPanel>
+                </Button>
+                <!--Output button-->
+                <Button Height="38" Width="105" FontSize="16"  Command="{Binding OutputToCommand}" Grid.Column="1" >
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="&#xE8DE;" FontFamily="Segoe MDL2 Assets" Padding="4" RenderTransformOrigin="0.5,0.5"/>
+                        <TextBlock Text="Output to" Margin="0,0,4,0" FontSize="14" Padding="6,2,0,0"/>
+                    </StackPanel>
+                </Button>
+                <!--Render button-->
+                <Button Height="38" Width="105" FontSize="16" Command="{Binding RenderCommand}" Grid.Column="2" >
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" Padding="4" RenderTransformOrigin="0.5,0.5"/>
+                        <TextBlock x:Name="RenderButtonText" Margin="0,0,4,0" FontSize="14" Padding="6,2,0,0" >
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Render"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=RenderInProgress, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                                            <Setter Property="Text" Value="Cancel"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <!--Output options-->
+            <Grid Margin="5,0,0,0" Background="White">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <!--Include subfolders-->
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="10,0" >
+                    <ToggleButton FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,5,0" IsChecked="{Binding IncludeSubfolders}"
+                                  Cursor="Hand">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="Content" Value="&#xE73A;"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="false">
+                                        <Setter Property="Content" Value="&#xE739;"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <TextBlock Text="Include subfolders"  VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+                <!--Keep folder structure-->
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10,0,10,0" >
+                    <ToggleButton FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,5,0" IsChecked="{Binding KeepFolderStructure}"
+                                  Cursor="Hand">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="Content" Value="&#xE73A;"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="false">
+                                        <Setter Property="Content" Value="&#xE739;"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <TextBlock Text="Keep folder structure"  VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <Grid Grid.Row="1" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="13.333" />
+                <ColumnDefinition Width="85.667"/>
+                <ColumnDefinition  />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Render queue" Foreground="{StaticResource Dark}" FontWeight="Medium" VerticalAlignment="Center" 
+                       Grid.Column="0" Margin="10,6,0,5" FontSize="14" Grid.ColumnSpan="2"/>
+            <!--Batch button-->
+            <Button Content="[ clear ]" FontSize="14" Grid.Column="2" Command="{Binding ClearCommand}" VerticalAlignment="Center"
+                    HorizontalAlignment="Left" Margin="10,6,10,5" />
+            <!--Render settings-->
+            <StackPanel Orientation="Horizontal" Grid.Column="3" Margin="0,8,20,8" VerticalAlignment="Center">
+                <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding ColorCorrection}" Margin="5,0" 
+                              FontSize="14" >
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Foreground" Value="Cyan"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding PremultiplyAlpha}" Margin="5,0"
+                              FontSize="14" >
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Foreground" Value="Magenta"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Content="&#xEDB0;" FontFamily="Segoe MDL2 Assets" IsChecked="{Binding LuminanceToAlpha}" Margin="5,0" 
+                              FontSize="14" >
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Foreground" Value="Yellow"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </StackPanel>
+        </Grid>
+
+        <!--ListView-->
+        <ListView x:Name="ListView" ItemsSource="{Binding RenderQueue, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                  IsSynchronizedWithCurrentItem="True" Grid.Row="2" BorderBrush="{x:Null}" Background="{x:Null}" ItemTemplate="{StaticResource ListItem}"
+                  Margin="5,0,0,5" MaxHeight="310" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False">
+            <ListView.InputBindings>
+                <KeyBinding Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedIndex, ElementName=ListView}" Key="Delete" />
+            </ListView.InputBindings>
+        </ListView>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="10,0,0,5" >
+            <TextBlock Text="&#xEDB0;" FontFamily="Segoe MDL2 Assets" Foreground="Cyan" Margin="0,2" />
+            <TextBlock Text="Color corr. " Foreground="{StaticResource Ash}" Margin="2,0" />
+            <TextBlock Text="&#xEDB0;" FontFamily="Segoe MDL2 Assets" Foreground="Magenta" Margin="0,2" />
+            <TextBlock Text="Premultiply alpha " Foreground="{StaticResource Ash}" Margin="2,0" />
+            <TextBlock Text="&#xEDB0;" FontFamily="Segoe MDL2 Assets" Foreground="Yellow" Margin="0,2" />
+            <TextBlock Text="Luminance to alpha " Foreground="{StaticResource Ash}" Margin="2,0" />
+        </StackPanel>
+    </Grid>
+</UserControl>
