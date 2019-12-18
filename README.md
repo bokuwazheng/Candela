@@ -3,6 +3,8 @@ Candela is a simple PNG editor that proposes useful yet often underrated and una
 
 Credit for project idea goes to [Alexander Druganov](https://vk.com/randomkun).
 
+![candela_ui_showcase](https://user-images.githubusercontent.com/46743297/71088980-de8d8a00-21b0-11ea-824d-526aa68ec9fd.jpg)
+
 ## References
 ### About premultiplied alpha and alpha blending:
 * https://www.cgdirector.com/premultiplied-alpha-vs-straight-alpha/
